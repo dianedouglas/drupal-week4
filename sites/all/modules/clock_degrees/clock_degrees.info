@@ -1,0 +1,7 @@
+name = Clock Degrees
+description = Calculate the distance between the hour and minute hand on a clock face at any given time.
+package = Epicodus Examples
+core = 7.x
+files[] = clock_degrees.module
+files[] = clock_degrees.test
+dependencies[] = simpletest

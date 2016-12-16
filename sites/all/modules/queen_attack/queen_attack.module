@@ -1,0 +1,86 @@
+<?php
+
+function queen_attack_menu() {
+    $items = array();
+    $items['queen_attack'] = array(
+        'title' => 'Queen Attack',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('queen_attack_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['queen_attack_results'] = array(
+        'title' => 'Queen Attack Results',
+        'page callback' => 'queen_attack_results',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function queen_attack_form() {
+    $position = array(0 => '1', 1 => '2', 2 => '3', 3 => '4', 4 => '5', 5 => '6', 6 => '7', 7 => '8');
+
+    $form['queen_position_row'] = array(
+        '#title' => 'Queen position (row)',
+        '#type' => 'radios',
+        '#default_value' => 0,
+        '#options' => $position,
+        '#description' => t("Select the queen's row position"),
+    );
+    $form['queen_position_col'] = array(
+        '#title' => 'Queen position (col)',
+        '#type' => 'radios',
+        '#default_value' => 0,
+        '#options' => $position,
+        '#description' => t("Select the queen's column position"),
+    );
+    $form['other_position_row'] = array(
+        '#title' => 'Other piece position (row)',
+        '#type' => 'radios',
+        '#default_value' => 0,
+        '#options' => $position,
+        '#description' => t("Select the other's row position"),
+    );
+    $form['other_position_col'] = array(
+        '#title' => 'Other piece position (col)',
+        '#type' => 'radios',
+        '#default_value' => 0,
+        '#options' => $position,
+        '#description' => t("Select the other's column position"),
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Select',
+    );
+    return $form;
+}
+
+function queen_attack_form_submit($form, &$form_state) {
+    $queen_row = $form_state['values']['queen_position_row'];
+    $queen_col = $form_state['values']['queen_position_col'];
+    $queen_loc = [$queen_row, $queen_col];
+
+    $other_row = $form_state['values']['other_position_row'];
+    $other_col = $form_state['values']['other_position_col'];
+    $other_loc = [$other_row, $other_col];
+
+    $_SESSION['final_results'] = queenAttack($queen_loc, $other_loc);
+    $form_state['redirect'] = 'queen_attack_results';
+}
+
+function queenAttack($queen_loc, $other_loc) {
+  // row is 0 element of array, column is 1
+  // if row = row, or col = col, or the distance between the row positions is equal to the distance between the column positions then queen can attack.
+  return ($queen_loc[0] == $other_loc[0]) || ($queen_loc[1] == $other_loc[1]) || (abs($queen_loc[0] - $other_loc[0]) == abs($queen_loc[1] - $other_loc[1]));
+}
+
+function queen_attack_results() {
+    $output = "";
+    if ($_SESSION['final_results'] == "1") {
+        $output = "can";
+    } else {
+        $output = "can NOT";
+    }
+    return '<p>The queen ' . $output . ' attack the other piece.</p>';
+}

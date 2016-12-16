@@ -1,0 +1,6 @@
+name = Current Time with Ajax
+description = Display the Current Time with Ajax.
+package = Epicodus Examples
+core = 7.x
+files[] = current_time_ajax.module
+scripts[] = ajax_link.js

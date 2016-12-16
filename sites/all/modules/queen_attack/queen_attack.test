@@ -1,0 +1,40 @@
+<?php
+class QueenAttackTestCase extends DrupalUnitTestCase 
+{
+
+    public static function getInfo() 
+    {
+        return array(
+        'name' => 'Queen Attack Tests',
+        'description' => 'Test that my queen attack module works.',
+        'group' => 'Epicodus Examples Tests',
+        );
+    }
+
+    function testQueenAttack() 
+    {
+
+        //English description
+        //displays desired result during test
+        $description = "Queen and Target in the same row, queen can attack.";
+
+        //Arrange
+        //create input as it comes out of the form.
+        $input = array("12","00");
+
+        //Act
+        //run the function we're testing with input and store output in $result.
+        $result = calculate_degrees($input);
+
+        //Assert
+        //This time we're using assertEqual
+        //If the first argument == second argument, test passes.
+        //Again pass in $description for display. 
+        $expected_output = 0;
+        $this->assertEqual($result, $expected_output, $description);
+
+        //More test cases here.
+
+    }
+
+}

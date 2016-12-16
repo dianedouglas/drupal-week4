@@ -1,0 +1,7 @@
+name = Queen Attack
+description = Module for determining if a queen can attack another piece based on given locations
+package = Epicodus Examples
+core = 7.x
+files[] = queen_attack.module
+files[] = queen_attack.test
+dependencies[] = simpletest

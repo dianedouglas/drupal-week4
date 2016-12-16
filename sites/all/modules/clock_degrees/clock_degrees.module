@@ -1,0 +1,73 @@
+<?php
+
+    function clock_degrees_menu() {
+        $items['clock_degrees'] = array(
+            'title' => "Calculate Angle",
+            'page callback' => 'drupal_get_form',
+            'page arguments' => array('clock_degrees_form'),
+            'access callback' => TRUE,
+            'type' => MENU_NORMAL_ITEM,
+        );
+        $items['clock_degrees_success'] = array(
+            'title' => 'This is your angle!',
+            'page callback' => 'clock_degrees_success_page',
+            'access callback' => TRUE,
+            'type' => MENU_CALLBACK,
+        );
+
+        return $items;
+    }
+
+    function clock_degrees_form() {
+        $path = drupal_get_path('module', 'clock_degrees') . '/kurtangle.png';
+        $html = "<img src=" . $path . " alt='Kurt Angle' /><p>But not your olympic hero, Kurt Angle</p>";
+
+        $form['time'] = array(
+            '#title' => 'Enter the time for the angle you want to calculate.',
+            '#type' => 'textfield',
+            '#description' => t('For example: 3:35'),
+            '#suffix' => $html,
+        );
+        $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => 'Submit',
+        );
+        return $form;
+    }
+
+    function clock_degrees_form_submit($form, &$form_state) {
+        $time = explode(":", $form_state['values']['time']);
+        $degree_difference = calculate_degrees($time);
+
+        $_SESSION['degrees'] = $degree_difference;
+        $form_state['redirect'] = 'clock_degrees_success';
+    }
+
+    function calculate_degrees($time) {
+
+        $hours = (int) $time[0];
+        $minutes = (int) $time[1];
+
+        //number of degrees between 12:00 and 12:01 for the min hand = 360/60 = 6 degrees.
+        $one_minute_distance = 6;
+        //at 1:00pm, the hour hand is at 360/12 = 30 degrees.
+        $one_hour_distance = 30;
+        //60 min
+        $hour_hand_degrees_from12 = $hours * $one_hour_distance;
+        $minute_hand_degrees_from12 = $minutes * $one_minute_distance;
+
+        //move hour hand a few more degrees to account for minutes.
+        $fraction_of_hour = ($minutes / 60) * $one_hour_distance;
+        $hour_hand_degrees_from12 += $fraction_of_hour;
+
+        $degree_difference = abs($minute_hand_degrees_from12 - $hour_hand_degrees_from12);
+        if ($degree_difference > 180) {
+          $degree_difference = 360 - $degree_difference;
+        }
+        return $degree_difference;
+    }
+
+    function clock_degrees_success_page() {
+        $degrees = $_SESSION['degrees'];
+        return "<h3>The distance between the hour hand and minute hand is: </h3><p>$degrees &#176;</p>";
+    }
